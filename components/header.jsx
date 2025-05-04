@@ -9,7 +9,7 @@ function header() {
     return <div className='fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b'>
         <nav className='container mx-auto px-4 py-4 flex items-center justify-between'>
             <Link href="/">
-                <Image src={"/logo2.jpg"} alt="logo" width={200} height={60} className='h-12 w-auto object-contain' />
+                <Image src={"/logo3.png"} alt="logo" width={200} height={60} className='h-12 w-auto object-contain rounded-3xl' />
             </Link>
 
             <div className="flex items-center space-x-4">

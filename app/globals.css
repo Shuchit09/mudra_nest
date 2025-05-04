@@ -116,7 +116,31 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .gradient {
+    background-image: linear-gradient(to bottom right, #00d2ff,#236da3, #1e88e5);
+  }
+
+  .gradient-title {
+    @apply font-extrabold tracking-tighter pr-2 pb-2 text-transparent bg-clip-text;
+  }
+
+  .hero-image-wrapper {
+    perspective: 1000px;
+  }
+
+  .hero-image {
+    transform: rotateX(15deg) scale(1);
+    transition: transform 0.5s ease-out;
+  }
+
+  .hero-image.scrolled {
+    transform: rotateX(0deg) scale(1) translateY(40px);
   }
 }
