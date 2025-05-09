@@ -24,7 +24,7 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "accoutns" (
+CREATE TABLE "accounts" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "type" "AccountType" NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE "accoutns" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "accoutns_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -78,7 +78,7 @@ CREATE UNIQUE INDEX "users_clerkUserId_key" ON "users"("clerkUserId");
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE INDEX "accoutns_userId_idx" ON "accoutns"("userId");
+CREATE INDEX "accounts_userId_idx" ON "accounts"("userId");
 
 -- CreateIndex
 CREATE INDEX "transactions_userId_idx" ON "transactions"("userId");
@@ -93,13 +93,13 @@ CREATE UNIQUE INDEX "budgets_userId_key" ON "budgets"("userId");
 CREATE INDEX "budgets_userId_idx" ON "budgets"("userId");
 
 -- AddForeignKey
-ALTER TABLE "accoutns" ADD CONSTRAINT "accoutns_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "accoutns"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
