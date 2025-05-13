@@ -6,7 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Mudra Nest",
+  title: "MudraNest",
   description: "One stop Finance",
 };
 
@@ -23,9 +23,9 @@ export default function RootLayout({ children }) {
             {children}
           </main>
           {/* footer */}
-          <footer className="bg-blue-50 py-12">
+          <footer className="bg-blue-50 pt-2 pb-1">
             <div className="container mx-auto px-4 text-center text-gray-600">
-              <p> Developed by Shuchit</p>
+              <p className="text-sm">©️ Developed by Shuchit</p>
             </div>
           </footer>
         </body>
