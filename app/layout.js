@@ -2,30 +2,30 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "MudraNest",
-  description: "One stop Finance",
+  description: "One stop Finance Platform",
 };
 
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-
       <html lang="en">
-        <body
-          className={`${inter.className}`} >
-          {/* header */}
+        <head>
+          <link rel="icon" href="/logo-sm.png" sizes="any" />
+        </head>
+        <body className={`${inter.className}`}>
           <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          {/* footer */}
-          <footer className="bg-blue-50 pt-2 pb-1">
+          <main className="min-h-screen">{children}</main>
+          <Toaster richColors />
+
+          <footer className="bg-blue-50 py-6">
             <div className="container mx-auto px-4 text-center text-gray-600">
-              <p className="text-sm">©️ Developed by Shuchit</p>
+              <p>©️ Developed By Shuchit</p>
             </div>
           </footer>
         </body>
