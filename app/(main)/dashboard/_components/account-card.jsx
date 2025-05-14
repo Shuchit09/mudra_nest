@@ -12,7 +12,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import Link from 'next/link';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { updateDefaultAccount } from '@/actions/account';
+import { updateDefaultAccount } from '@/actions/accounts';
 import useFetch from '@/hooks/use-fetch';
 import { toast } from 'sonner';
 
