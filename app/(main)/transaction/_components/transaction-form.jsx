@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils'
 import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import ReceiptScanner from './receipt-scanner'
 
 
 
@@ -68,6 +69,7 @@ function AddTransactionForm({
                     type: "EXPENSE",
                     amount: "",
                     description: "",
+                    category: "",
                     accountId: accounts.find((ac) => ac.isDefault)?.id,
                     date: new Date(),
                     isRecurring: false,
@@ -106,9 +108,25 @@ function AddTransactionForm({
         (category) => category.type === type
     )
 
+    const handleScanComplete = (scannedData) => {
+        console.log(scannedData)
+        if (scannedData) {
+            setValue("amount", scannedData.amount.toString());
+            setValue("date", new Date(scannedData.date));
+            if (scannedData.description) {
+                setValue("description", scannedData.description);
+            }
+            if (scannedData.category) {
+                setValue("category", scannedData.category);
+            }
+            toast.success("Receipt scanned successfully");
+        }
+    }
+
     return (
         <form className='space-y-6 mb-10' onSubmit={handleSubmit(onSubmit)}>
-            {/* AI RECEIPT SCANNER */}
+
+            <ReceiptScanner onScanComplete={handleScanComplete} />
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">Type</label>
