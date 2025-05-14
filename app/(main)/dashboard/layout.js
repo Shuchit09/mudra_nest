@@ -8,7 +8,7 @@ const DashboardLayout = () => {
             <h1 className='text-6xl font-bold gradient gradient-title'>Dashboard</h1>
 
             {/* dashboard page */}
-            <Suspense fallback={<BarLoader className='mt-4' width="100%" color="#9333ea" />}>
+            <Suspense fallback={<BarLoader className='mt-4' width="100%" color="#2563eb" />}>
                 <DashboardPage />
             </Suspense>
         </div>
