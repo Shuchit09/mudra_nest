@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Input } from '@/components/ui/input'
 import useFetch from '@/hooks/use-fetch'
-import { createTransaction } from '@/actions/transaction'
+import { createTransaction, updateTransaction } from '@/actions/transaction'
 import { CreateAccountDrawer } from '@/components/create-account-drawer'
 import { Button } from '@/components/ui/button'
 import {
@@ -28,8 +28,8 @@ import { Switch } from '@/components/ui/switch'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import ReceiptScanner from './receipt-scanner'
-
-
+import { useSearchParams } from 'next/navigation'
+import { Loader2 } from 'lucide-react'
 
 
 function AddTransactionForm({
@@ -40,6 +40,8 @@ function AddTransactionForm({
 }) {
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get("edit");
 
     const {
         register,
@@ -80,7 +82,7 @@ function AddTransactionForm({
         loading: transactionLoading,
         fn: transactionFn,
         data: transactionResult,
-    } = useFetch(editMode ? "updateTransaction" : createTransaction);
+    } = useFetch(editMode ? updateTransaction : createTransaction);
 
     const type = watch("type")
     const isRecurring = watch("isRecurring")
@@ -91,13 +93,19 @@ function AddTransactionForm({
             ...data,
             amount: parseFloat(data.amount)
         }
-
-        transactionFn(formData)
+        if (editMode) {
+            transactionFn(editId, formData);
+        } else {
+            transactionFn(formData);
+        }
     }
 
     useEffect(() => {
         if (transactionResult?.success && !transactionLoading) {
-            toast.success("Transaction created successfully"
+            toast.success(
+                editMode
+                    ? "Transaction updated successfully"
+                    : "Transaction created successfully"
             );
             reset();
             router.push(`/account/${transactionResult.data.accountId}`);
@@ -126,7 +134,7 @@ function AddTransactionForm({
     return (
         <form className='space-y-6 mb-10' onSubmit={handleSubmit(onSubmit)}>
 
-            <ReceiptScanner onScanComplete={handleScanComplete} />
+            {!editMode && <ReceiptScanner onScanComplete={handleScanComplete} />}
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">Type</label>
@@ -304,7 +312,16 @@ function AddTransactionForm({
                 <Button type="button" variant="outline" className="w-full" onClick={() => {
                     router.back()
                 }}>Cancel</Button>
-                <Button type='submit' className='w-full' disabled={transactionLoading}>Create Transaction</Button>
+                <Button type='submit' className='w-full' disabled={transactionLoading}> {transactionLoading ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {editMode ? "Updating..." : "Creating..."}
+                    </>
+                ) : editMode ? (
+                    "Update Transaction"
+                ) : (
+                    "Create Transaction"
+                )}</Button>
             </div>
         </form >
     )

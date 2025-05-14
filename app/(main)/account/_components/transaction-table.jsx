@@ -32,7 +32,7 @@ import { ChevronDown, ChevronUp, MoreHorizontal, Trash } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { RefreshCcw } from 'lucide-react';
 import { Clock } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { BarLoader } from 'react-spinners';
@@ -61,7 +61,7 @@ const RECURRING_INTERVALS = {
 
 function TransactionTable({ transactions }) {
 
-    // const router = useRouter();
+    const router = useRouter();
 
     const [selectedIds, setSelectedIds] = useState([]);
     const [sortConfig, setSortConfig] = useState({
