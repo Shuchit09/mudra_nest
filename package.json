@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@arcjet/inspect": "^1.0.0-beta.7",
     "@arcjet/next": "^1.0.0-beta.7",
     "@bufbuild/protobuf": "^2.4.0",
     "@clerk/nextjs": "^6.19.2",

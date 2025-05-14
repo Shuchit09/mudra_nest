@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { request } from "@arcjet/next";
+import aj from "@/lib/arcjet";
 
 const serializeAmount = (obj) => ({
     ...obj,
@@ -20,24 +21,42 @@ export async function createTransaction(data) {
 
         const req = await request();
 
+        try {
+            const headersObj = {};
+            for (const [key, value] of req.headers) {
+                headersObj[key] = value;
+            }
+            console.log("Arcjet Request Headers:", headersObj);
+        } catch (e) {
+            console.warn("Could not read headers:", e.message);
+          }
+
+        console.log("Arcjet userId:", userId)
+
         const decision = await aj.protect(req, {
-            userId, requested: 1
-        })
+            userId,
+            requested: 1,
+        });
+
+        console.log("Arcjet decision:", decision)
 
         if (decision.isDenied()) {
             if (decision.reason.isRateLimit()) {
                 const { remaining, reset } = decision.reason;
-                console.log({
+                console.error({
                     code: "RATE_LIMIT_EXCEEDED",
                     details: {
                         remaining,
                         resetInSeconds: reset,
-                    }
-                })
-                throw new Error("Too many requests. Please try again later.")
+                    },
+                });
+
+                throw new Error("Too many requests. Please try again later.");
             }
-            throw new Error("Request blocked")
+
+            throw new Error("Request blocked");
         }
+
 
         const user = await db.user.findUnique({
             where: { clerkUserId: userId },
