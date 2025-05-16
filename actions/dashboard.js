@@ -1,6 +1,8 @@
 "use server";
 
+import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
+import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -53,6 +55,32 @@ export async function createAccount(data) {
         const { userId } = await auth();
         if (!userId) throw new Error("Unauthorized");
 
+        // Get request data for ArcJet
+        const req = await request();
+
+        // Check rate limit
+        const decision = await aj.protect(req, {
+            userId,
+            requested: 1, // Specify how many tokens to consume
+        });
+
+        if (decision.isDenied()) {
+            if (decision.reason.isRateLimit()) {
+                const { remaining, reset } = decision.reason;
+                console.error({
+                    code: "RATE_LIMIT_EXCEEDED",
+                    details: {
+                        remaining,
+                        resetInSeconds: reset,
+                    },
+                });
+
+                throw new Error("Too many requests. Please try again later.");
+            }
+
+            throw new Error("Request blocked");
+        }
+
         const user = await db.user.findUnique({
             where: { clerkUserId: userId },
         });
@@ -65,11 +93,14 @@ export async function createAccount(data) {
         if (isNaN(balanceFloat)) {
             throw new Error("Invalid balance amount");
         }
+
         const existingAccounts = await db.account.findMany({
             where: { userId: user.id },
         });
+
         const shouldBeDefault =
             existingAccounts.length === 0 ? true : data.isDefault;
+
         if (shouldBeDefault) {
             await db.account.updateMany({
                 where: { userId: user.id, isDefault: true },
@@ -77,12 +108,13 @@ export async function createAccount(data) {
             });
         }
 
+        // Create new account
         const account = await db.account.create({
             data: {
                 ...data,
                 balance: balanceFloat,
                 userId: user.id,
-                isDefault: shouldBeDefault,
+                isDefault: shouldBeDefault, // Override the isDefault based on our logic
             },
         });
 
